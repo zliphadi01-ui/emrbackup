@@ -6,12 +6,17 @@
     <title>Dashboard RME - RS Polije</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS from Design System -->
+    <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
+
     <style>
 :root{
     --ui-bg: #0b1a2b; /* dark sidebar */
-    --primary: #40407a;        /* ✅ WARNA UTAMA BARU */
-    --primary-600: #32325f;
+    /* --primary: #40407a; */       /* ✅ WARNA UTAMA BARU - Overridden by custom.css */
+    /* --primary-600: #32325f; */
     --muted: #6c757d;
     --card-bg: #ffffff;
     --card-shadow: 0 8px 26px rgba(64,64,122,0.12);
