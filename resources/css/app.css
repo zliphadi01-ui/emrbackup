@@ -1,11 +1,19 @@
-@import 'tailwindcss';
+/* @import 'tailwindcss'; */
 
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
-@source '../**/*.blade.php';
-@source '../**/*.js';
+/*
+   We are disabling Tailwind's base reset because the project primarily uses Bootstrap classes.
+   Having both active causes "messy" UI because Tailwind resets headings (h1, h2, etc.) to plain text
+   and removes defaults that Bootstrap expects.
 
-@theme {
+   If you want to use Tailwind utilities, uncomment the import below, but be aware of the style conflicts.
+*/
+
+/* @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php'; */
+/* @source '../../storage/framework/views/*.php'; */
+/* @source '../**/*.blade.php'; */
+/* @source '../**/*.js'; */
+
+/* @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
-}
+} */

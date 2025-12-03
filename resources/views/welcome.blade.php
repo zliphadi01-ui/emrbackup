@@ -5,187 +5,278 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistem Rekam Medis Elektronik - Klinik Polije</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Rekam Medis Elektronik - Klinik Polije</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
+    <!-- Bootstrap & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <!-- Poppins font (if you don't import in layout, this keeps welcome page consistent) -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
 
     <style>
-        :root{
-            --brand-blue: #0d6efd;
-            --muted: #6c757d;
-            --card-radius: .75rem;
+        body {
+            background-color: #f8fafc;
         }
-        html { scroll-behavior: smooth; }
-        body{ font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; }
 
-        /* Hero: clean gradient background */
-        .hero-section{
-            background: linear-gradient(135deg, #eaf4ff 0%, #ffffff 100%);
-            color:rgb(8, 32, 55);
-            padding: 7rem 0 4rem 0;
-            text-align: center;
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 8rem 0 6rem;
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+            position: relative;
+            overflow: hidden;
         }
-        .hero-title{ font-size: 3rem; font-weight:700; margin-bottom: .5rem; }
-        .hero-lead{ color: var(--muted); font-size:1.125rem; margin-bottom: 1.5rem; }
 
-        /* Feature cards under Fitur Unggulan */
-        .features-row{ margin-top: 1.5rem; }
-        .feature-card{ border: 0; border-radius: var(--card-radius); transition: transform .18s ease, box-shadow .18s ease; }
-        .feature-card:hover{ transform: translateY(-6px); box-shadow: 0 10px 30px rgba(13,110,253,0.12); }
-        .feature-icon{ font-size: 2.25rem; color: var(--brand-blue); }
-        .feature-title{ font-weight:600; margin-top:.75rem; }
-        .feature-desc{ color:var(--muted); font-size:.95rem; }
+        .hero-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 30px 30px;
+            opacity: 0.5;
+        }
 
-        .section-title{ text-align:center; margin-bottom:1rem; }
-        footer{ background:#adb5bd; color:#FFFFFF; }
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 2.5rem;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s ease;
+            height: 100%;
+            border: 1px solid transparent;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary-light);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .feature-icon-wrapper {
+            width: 80px;
+            height: 80px;
+            background: var(--primary-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            font-size: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover .feature-icon-wrapper {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-light-primary {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .btn-light-primary:hover {
+            background: white;
+            color: var(--primary);
+        }
     </style>
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container">
-            <a class="navbar-brand fw-bold text-primary" href="{{ url('/') }}"><i class="bi-hospital-fill me-2"></i>RME Klinik POLIJE</a>
+            <a class="navbar-brand fw-bold text-primary d-flex align-items-center" href="#">
+                <span class="bg-primary text-white rounded-3 d-flex align-items-center justify-content-center me-2" style="width: 35px; height: 35px;">
+                    <i class="fas fa-heartbeat"></i>
+                </span>
+                RME POLIJE
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="{{ route('dashboard') }}">Portal</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#features">Panduan</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#contact">IT Support</a></li>
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item me-3"><a class="nav-link text-dark fw-medium" href="#features">Fitur</a></li>
+                    <li class="nav-item me-3"><a class="nav-link text-dark fw-medium" href="#about">Tentang</a></li>
+                    <li class="nav-item me-4"><a class="nav-link text-dark fw-medium" href="#contact">Kontak</a></li>
+                    <li class="nav-item">
+                        <a href="{{ route('login') }}" class="btn btn-primary px-4 py-2 rounded-pill shadow-sm">
+                            <i class="fas fa-sign-in-alt me-2"></i> Login Portal
+                        </a>
+                    </li>
                 </ul>
-                <a href="{{ url('/login') }}" class="btn btn-primary ms-lg-3">Login</a>
             </div>
         </div>
     </nav>
 
-    <!-- HERO (no image; gradient background) -->
+    <!-- Hero Section -->
     <header class="hero-section">
-        <div class="container">
-            <h1 class="hero-title">Sistem Rekam Medis Elektronik</h1>
-            <p class="hero-lead">Akses dan kelola data medis pasien secara cepat, akurat, dan aman. Silakan masuk untuk memulai sesi Anda.</p>
-            <!-- Removed the two center CTAs per spec; navbar login will be used -->
+        <div class="hero-pattern"></div>
+        <div class="container position-relative z-1">
+            <div class="row align-items-center">
+                <div class="col-lg-7">
+                    <span class="badge bg-white text-primary mb-3 px-3 py-2 rounded-pill fw-bold shadow-sm">
+                        <i class="fas fa-star me-1"></i> Sistem Informasi Klinik Terpadu
+                    </span>
+                    <h1 class="hero-title">Solusi Cerdas untuk <br>Manajemen Kesehatan</h1>
+                    <p class="lead mb-5 opacity-90 fw-light">
+                        Platform Rekam Medis Elektronik yang terintegrasi, aman, dan mudah digunakan.
+                        Tingkatkan efisiensi pelayanan medis di Klinik Polije.
+                    </p>
+                    <div class="d-flex gap-3">
+                        <a href="{{ route('login') }}" class="btn btn-light btn-lg px-5 py-3 rounded-pill fw-bold text-primary shadow-lg">
+                            Mulai Sekarang <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                        <a href="#features" class="btn btn-light-primary btn-lg px-5 py-3 rounded-pill fw-bold">
+                            Pelajari Lebih Lanjut
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-5 d-none d-lg-block">
+                    <!-- Illustration Placeholder -->
+                    <img src="https://img.freepik.com/free-vector/health-professional-team-concept-illustration_114360-1618.jpg" alt="Medical Team" class="img-fluid rounded-4 shadow-soft hover-lift" style="border: 4px solid rgba(255,255,255,0.2);">
+                </div>
+            </div>
         </div>
     </header>
 
-    <!-- Features section: title + 4 cards (icons moved up under title) -->
-    <section class="py-5" id="features">
-        <div class="container">
-            <div class="section-title">
-                <h2 class="fw-bold">Fitur Unggulan Sistem RME</h2>
-                <p class="text-muted">Dirancang untuk meningkatkan efisiensi dan akurasi pelayanan medis.</p>
+    <!-- Features Section -->
+    <section class="py-5 mt-5" id="features">
+        <div class="container py-5">
+            <div class="text-center mb-5">
+                <h6 class="text-primary fw-bold text-uppercase tracking-wide">Keunggulan Kami</h6>
+                <h2 class="fw-bold display-5 mb-3">Mengapa Memilih RME Polije?</h2>
+                <p class="text-muted lead mx-auto" style="max-width: 600px;">
+                    Dirancang khusus untuk memenuhi kebutuhan operasional klinik modern dengan teknologi terkini.
+                </p>
             </div>
 
-            <div class="row features-row g-4">
-                <div class="col-md-3">
-                    <div class="card feature-card h-100 p-4 text-center">
-                        <div class="feature-icon"><i class="bi-database-fill-check"></i></div>
-                        <div class="feature-title">Data Terpusat</div>
-                        <div class="feature-desc">Semua informasi pasien tersimpan dalam satu sistem terpadu sehingga memudahkan akses data kapan pun dibutuhkan. Dengan integrasi otomatis antar unit, pencatatan menjadi lebih efisien dan risiko kesalahan dapat diminimalkan.</div>
-                    </div>
-                </div>
-
-                <div class="col-md-3">
-                    <div class="card feature-card h-100 p-4 text-center">
-                        <div class="feature-icon"><i class="bi-speedometer2"></i></div>
-                        <div class="feature-title">Akses Cepat</div>
-                        <div class="feature-desc">Proses pencarian dan pembaruan data berlangsung secara real-time. Tenaga medis dapat memperoleh informasi pasien hanya dalam hitungan detik, sehingga pelayanan dapat diberikan lebih cepat dan tepat.</div>
-                    </div>
-                </div>
-
-                <div class="col-md-3">
-                    <div class="card feature-card h-100 p-4 text-center">
-                        <div class="feature-icon"><i class="bi-shield-lock-fill"></i></div>
-                        <div class="feature-title">Keamanan Terjamin</div>
-                        <div class="feature-desc">Sistem dilengkapi dengan standar keamanan tingkat tinggi, termasuk enkripsi data dan pengaturan hak akses. Privasi pasien tetap terlindungi dan hanya pengguna berwenang yang dapat mengakses informasi sensitif.</div>
-                    </div>
-                </div>
-
-                <div class="col-md-3">
-                    <div class="card feature-card h-100 p-4 text-center">
-                        <div class="feature-icon"><i class="bi-people-fill"></i></div>
-                        <div class="feature-title">Manajemen User</div>
-                        <div class="feature-desc">Pengelolaan akun tenaga medis, admin, dan staf pendukung dilakukan secara fleksibel dan terstruktur. Setiap pengguna memiliki hak akses sesuai perannya, memastikan alur kerja tetap aman dan efisien..</div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- Brief modules (kept compact) -->
-    <section class="py-5 bg-light" id="modules">
-        <div class="container">
-            <div class="section-title">
-                <h2 class="fw-bold">Modul Utama Sistem</h2>
-                <p class="text-muted">Jelajahi berbagai modul yang dirancang untuk kebutuhan klinis dan administratif.</p>
-            </div>
-            <div class="row">
-                <div class="col-md-4 mb-4">
-                    <div class="card service-card shadow-sm">
-                        <div class="card-body p-4">
-                            <h5 class="fw-bold"><i class="bi-journal-medical text-primary me-2"></i>Modul Rawat Jalan</h5>
-                            <p class="text-muted">Kelola antrean, pendaftaran kunjungan, dan asesmen SOAP untuk pasien poliklinik.</p>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="feature-card text-center">
+                        <div class="feature-icon-wrapper mx-auto">
+                            <i class="fas fa-database"></i>
                         </div>
+                        <h4 class="fw-bold mb-3">Data Terintegrasi</h4>
+                        <p class="text-muted">
+                            Satu sistem untuk semua unit. Data pasien mengalir mulus dari pendaftaran, poli, hingga farmasi tanpa duplikasi.
+                        </p>
                     </div>
                 </div>
-                <div class="col-md-4 mb-4">
-                    <div class="card service-card shadow-sm">
-                        <div class="card-body p-4">
-                            <h5 class="fw-bold"><i class="bi-capsule text-primary me-2"></i>Resep Elektronik</h5>
-                            <p class="text-muted">Buat dan kelola resep obat secara digital untuk mengurangi kesalahan medis.</p>
+                <div class="col-md-4">
+                    <div class="feature-card text-center">
+                        <div class="feature-icon-wrapper mx-auto">
+                            <i class="fas fa-shield-alt"></i>
                         </div>
+                        <h4 class="fw-bold mb-3">Keamanan Tinggi</h4>
+                        <p class="text-muted">
+                            Dilengkapi enkripsi data dan manajemen hak akses bertingkat untuk menjamin kerahasiaan rekam medis pasien.
+                        </p>
                     </div>
                 </div>
-                <div class="col-md-4 mb-4">
-                    <div class="card service-card shadow-sm">
-                        <div class="card-body p-4">
-                            <h5 class="fw-bold"><i class="bi-file-earmark-bar-graph-fill text-primary me-2"></i>Pelaporan & Analitik</h5>
-                            <p class="text-muted">Hasilkan laporan kunjungan dan data klinis untuk kebutuhan manajemen.</p>
+                <div class="col-md-4">
+                    <div class="feature-card text-center">
+                        <div class="feature-icon-wrapper mx-auto">
+                            <i class="fas fa-chart-line"></i>
                         </div>
+                        <h4 class="fw-bold mb-3">Analitik Real-time</h4>
+                        <p class="text-muted">
+                            Pantau kinerja klinik dengan dashboard interaktif. Dapatkan wawasan mendalam untuk pengambilan keputusan.
+                        </p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <footer class="py-5" id="contact">
+    <!-- Stats Section -->
+    <section class="py-5 bg-white border-top border-bottom">
         <div class="container">
-            <div class="row">
-                <div class="col-md-4 mb-4">
-                    <h5 class="fw-bold text-primary"><i class="bi-hospital-fill me-2"></i>RME KLINIK POLIJE</h5>
-                    <p class="text-muted">Sistem Informasi Manajemen Rumah Sakit Terintegrasi.</p>
+            <div class="row text-center">
+                <div class="col-md-3 mb-4 mb-md-0">
+                    <h2 class="fw-bold text-primary display-4">10k+</h2>
+                    <p class="text-muted fw-bold">Pasien Terdaftar</p>
                 </div>
-                <div class="col-md-2 offset-md-1 mb-4">
-                    <h5 class="fw-bold">Tautan Cepat</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="{{ route('dashboard') }}" class="text-muted text-decoration-none">Dashboard</a></li>
-                        <li><a href="#modules" class="text-muted text-decoration-none">Panduan Sistem</a></li>
-                        <li><a href="#contact" class="text-muted text-decoration-none">Bantuan Teknis</a></li>
+                <div class="col-md-3 mb-4 mb-md-0">
+                    <h2 class="fw-bold text-primary display-4">50+</h2>
+                    <p class="text-muted fw-bold">Tenaga Medis</p>
+                </div>
+                <div class="col-md-3 mb-4 mb-md-0">
+                    <h2 class="fw-bold text-primary display-4">24/7</h2>
+                    <p class="text-muted fw-bold">Layanan Sistem</p>
+                </div>
+                <div class="col-md-3">
+                    <h2 class="fw-bold text-primary display-4">99%</h2>
+                    <p class="text-muted fw-bold">Kepuasan User</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <h5 class="fw-bold mb-3 d-flex align-items-center">
+                        <i class="fas fa-heartbeat text-primary me-2"></i> RME POLIJE
+                    </h5>
+                    <p class="text-white-50">
+                        Sistem Informasi Manajemen Klinik Politeknik Negeri Jember. Mewujudkan layanan kesehatan digital yang efisien dan akuntabel.
+                    </p>
+                </div>
+                <div class="col-lg-2 offset-lg-1">
+                    <h6 class="fw-bold mb-3">Navigasi</h6>
+                    <ul class="list-unstyled text-white-50">
+                        <li class="mb-2"><a href="#" class="text-reset text-decoration-none">Beranda</a></li>
+                        <li class="mb-2"><a href="#" class="text-reset text-decoration-none">Fitur</a></li>
+                        <li class="mb-2"><a href="#" class="text-reset text-decoration-none">Kontak</a></li>
                     </ul>
                 </div>
-                <div class="col-md-4 offset-md-1 mb-4">
-                    <h5 class="fw-bold">Kontak IT Support</h5>
-                    <p class="text-muted mb-1"><i class="bi-geo-alt-fill me-2"></i>Gedung IT, Politeknik Negeri Jember</p>
-                    <p class="text-muted mb-1"><i class="bi-telephone-fill me-2"></i>(0331) 123-456 ext. 2</p>
-                    <p class="text-muted mb-1"><i class="bi-envelope-fill me-2"></i>itsupport@klinikpolije.ac.id</p>
+                <div class="col-lg-2">
+                    <h6 class="fw-bold mb-3">Layanan</h6>
+                    <ul class="list-unstyled text-white-50">
+                        <li class="mb-2"><a href="#" class="text-reset text-decoration-none">Pendaftaran</a></li>
+                        <li class="mb-2"><a href="#" class="text-reset text-decoration-none">Jadwal Dokter</a></li>
+                        <li class="mb-2"><a href="#" class="text-reset text-decoration-none">Konsultasi</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3">
+                    <h6 class="fw-bold mb-3">Hubungi Kami</h6>
+                    <ul class="list-unstyled text-white-50">
+                        <li class="mb-2"><i class="fas fa-map-marker-alt me-2"></i> Jl. Mastrip, Jember</li>
+                        <li class="mb-2"><i class="fas fa-phone me-2"></i> (0331) 333532</li>
+                        <li class="mb-2"><i class="fas fa-envelope me-2"></i> klinik@polije.ac.id</li>
+                    </ul>
                 </div>
             </div>
-            <hr>
-            <p class="text-center text-muted mb-0">&copy; 2025 Divisi IT Klinik Polije. All Rights Reserved.</p>
+            <hr class="border-secondary my-4">
+            <div class="text-center text-white-50">
+                <small>&copy; {{ date('Y') }} UPT Klinik Politeknik Negeri Jember. All Rights Reserved.</small>
+            </div>
         </div>
     </footer>
 

@@ -4,502 +4,241 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard RME - RS Polije</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom Design System (Must come LAST to override Bootstrap) -->
+    <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
+
     <style>
-:root{
-    --ui-bg: #0b1a2b; /* dark sidebar */
-    --primary: #40407a;        /* ✅ WARNA UTAMA BARU */
-    --primary-600: #32325f;
-    --muted: #6c757d;
-    --card-bg: #ffffff;
-    --card-shadow: 0 8px 26px rgba(64,64,122,0.12);
-    --glass: rgba(255,255,255,0.6);
-}
+        /* Additional Sidebar Overrides if needed */
+        .sidebar {
+            width: 280px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: white !important;
+            border-right: 1px solid var(--border-color);
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            z-index: 100;
+            overflow-y: auto;
+        }
 
-body {
-    font-family: 'Poppins', sans-serif;
-    background-color: #f6f7fb; /* lebih clean */
-}
+        .main-content {
+            margin-left: 280px;
+            min-height: 100vh;
+            background-color: var(--bg-body);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-/* ================= SIDEBAR ================= */
-.sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 280px;
-    z-index: 100;
-    padding: 48px 0 0;
-    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .08);
-    transition: all 0.3s ease;
-    overflow-y: auto;
-}
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .sidebar { margin-left: -280px; }
+            .main-content { margin-left: 0; }
+            body.sidebar-toggled .sidebar { margin-left: 0; }
+        }
 
-.sidebar-nav .nav-link {
-    color: rgba(255,255,255,.8);
-    font-weight: 500;
-    padding: 0.75rem 1rem;
-    margin-bottom: 0.25rem;
-    border-radius: 0.6rem; /* lebih soft */
-    transition: all 0.2s ease;
-}
+        /* Desktop Toggled */
+        @media (min-width: 769px) {
+            body.sidebar-toggled .sidebar { margin-left: -280px; }
+            body.sidebar-toggled .main-content { margin-left: 0; }
+        }
 
-.sidebar-nav .nav-link:hover {
-    color: #fff;
-    background-color: rgba(255,255,255,.12);
-}
+        /* Active Link Style */
+        .nav-link.active {
+            background-color: var(--primary) !important;
+            color: white !important;
+            box-shadow: var(--shadow-md);
+        }
 
-.sidebar-nav .nav-link.active {
-    color: #fff;
-    background-color: var(--primary); /* ✅ ikut warna utama */
-}
-
-.sidebar .nav-heading {
-    font-size: .75rem;
-    text-transform: uppercase;
-    color: rgba(255,255,255,.4);
-    font-weight: 600;
-    letter-spacing: 0.5px;
-}
-
-.nav-link-sm {
-    font-size: 0.875rem;
-    padding: 0.5rem 1rem !important;
-}
-
-.nav-link .bi-chevron-down {
-    transition: transform 0.2s;
-}
-
-.nav-link[aria-expanded="true"] .bi-chevron-down {
-    transform: rotate(180deg);
-}
-
-.collapse .nav {
-    background-color: rgba(255,255,255,0.05);
-    border-radius: 0.6rem;
-    padding: 0.5rem 0;
-    margin-top: 0.25rem;
-}
-
-/* ================= MAIN CONTENT ================= */
-.main-content {
-    margin-left: 280px;
-    transition: all 0.3s ease;
-}
-
-.topbar {
-    height: 56px;
-}
-
-body.sidebar-toggled .sidebar {
-    margin-left: -280px;
-}
-
-body.sidebar-toggled .main-content {
-    margin-left: 0;
-}
-
-@media (max-width: 768px) {
-    .sidebar {
-        margin-left: -280px;
-    }
-    .main-content {
-        margin-left: 0;
-    }
-    body.sidebar-toggled .sidebar {
-        margin-left: 0;
-    }
-}
-
-/* ================= STAT CARD ================= */
-.stat-card{
-    background: var(--card-bg);
-    border: 0;
-    border-radius: 1rem; /* lebih modern */
-    padding: 1rem .85rem;
-    box-shadow: var(--card-shadow);
-    transform: translateY(6px);
-    opacity: 0;
-    transition: transform .25s ease, box-shadow .25s ease, opacity .25s ease;
-    will-change: transform, opacity;
-}
-
-/* staggered fade-in */
-#statsRow .col-xl-3:nth-child(1) .stat-card{ animation: fadeUp .45s ease .05s forwards; }
-#statsRow .col-xl-3:nth-child(2) .stat-card{ animation: fadeUp .45s ease .12s forwards; }
-#statsRow .col-xl-3:nth-child(3) .stat-card{ animation: fadeUp .45s ease .18s forwards; }
-#statsRow .col-xl-3:nth-child(4) .stat-card{ animation: fadeUp .45s ease .25s forwards; }
-
-@keyframes fadeUp{
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.stat-card:hover{ 
-    transform: translateY(-8px); 
-    box-shadow: 0 20px 55px rgba(64,64,122,0.18); 
-}
-
-/* ================= AVATAR ================= */
-.avatar-profile {
-    width: 40px;
-    height: 40px;
-    object-fit: cover;
-    border-radius: 50%;
-    flex-shrink: 0;
-    border: 2px solid rgba(255,255,255,0.25);
-    background-color: #fff;
-}
-
-/* ================= DROPDOWN ================= */
-.dropdown-menu {
-    border: none;
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
-    border-radius: 14px;
-    padding: 8px;
-    margin-top: 10px !important;
-    background-color: #fff !important;
-}
-
-.dropdown-item {
-    border-radius: 10px;
-    padding: 10px 16px;
-    font-weight: 500;
-    color: #4b5563;
-    transition: all 0.2s ease;
-}
-
-.dropdown-item:hover {
-    background-color: rgba(64,64,122,0.1) !important; /* ✅ soft dari primary */
-    color: var(--primary) !important;
-    transform: translateX(5px);
-}
-
-/* Icon di dalam dropdown */
-.dropdown-item i {
-    margin-right: 10px;
-    color: #9ca3af;
-    transition: color 0.2s;
-}
-
-.dropdown-item:hover i {
-    color: var(--primary);
-}
-
-/* Hapus panah dropdown */
-.dropdown-toggle::after {
-    vertical-align: middle;
-}
-</style>
-
+        .nav-link:hover:not(.active) {
+            background-color: var(--primary-light) !important;
+            color: var(--primary) !important;
+        }
+    </style>
     @stack('styles')
 </head>
 <body>
-    <nav class="sidebar bg-dark d-flex flex-column p-3">
-        <a href="{{ url('/dashboard') }}" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-            <i class="bi-hospital-fill fs-4 me-2"></i>
-            <span class="fs-4">RME POLIJE</span>
-        </a>
-        <hr>
-        @php
-            $user = Auth::user();
-            $role = $user ? $user->role : 'guest';
-        @endphp
-        <ul class="nav nav-pills flex-column mb-auto sidebar-nav">
-            <li class="nav-item">
-                <a href="{{ url('/dashboard') }}" class="nav-link {{ request()->is('dashboard') ? 'active' : '' }}">
-                    <i class="bi-grid-fill me-2"></i> Beranda
-                </a>
-            </li>
+    <!-- SIDEBAR -->
+    <nav class="sidebar d-flex flex-column p-0">
+        <!-- Logo Area -->
+        <div class="p-4 d-flex align-items-center border-bottom bg-white sticky-top">
+            <div class="bg-primary text-white rounded-3 d-flex align-items-center justify-content-center me-3 shadow-sm" style="width: 40px; height: 40px;">
+                <i class="fas fa-heartbeat fs-5"></i>
+            </div>
+            <div>
+                <h5 class="fw-bold mb-0 text-dark">RME Polije</h5>
+                <small class="text-muted" style="font-size: 0.75rem;">Sistem Informasi RS</small>
+            </div>
+        </div>
 
-            {{-- Pendaftaran Dropdown (Admin & Pendaftaran) --}}
-            @if(in_array($role, ['admin', 'pendaftaran']))
-            <li class="nav-item">
-                <a href="#pendaftaranMenu" class="nav-link d-flex justify-content-between align-items-center {{ request()->is('pendaftaran*') ? 'active' : '' }}"
-                data-bs-toggle="collapse" role="button" aria-expanded="{{ request()->is('pendaftaran*') ? 'true' : 'false' }}">
-                    <span><i class="bi-clipboard-plus me-2"></i> Pendaftaran</span>
-                    <i class="bi-chevron-down"></i>
-                </a>
-
-                <div class="collapse {{ request()->is('pendaftaran*') ? 'show' : '' }}" id="pendaftaranMenu">
-                    <ul class="nav flex-column ms-3">
-                        <li>
-                            <a href="{{ route('pendaftaran.index') }}" class="nav-link nav-link-sm {{ request()->routeIs('pendaftaran.index') || request()->routeIs('pendaftaran.create-baru') ? 'active' : '' }}">
-                                <i class="bi-pencil-square me-1"></i> Buat Pendaftaran
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('pendaftaran.list') }}" class="nav-link nav-link-sm {{ request()->routeIs('pendaftaran.list') ? 'active' : '' }}">
-                                <i class="bi-list-ul me-1"></i> Data Kunjungan
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </li>
-
-            <li class="nav-item">
-                <a href="#pasienMenu" class="nav-link d-flex justify-content-between align-items-center {{ request()->is('pasien*') ? 'active' : '' }}" data-bs-toggle="collapse" role="button" aria-expanded="{{ request()->is('pasien*') ? 'true' : 'false' }}">
-                    <span><i class="bi-people-fill me-2"></i> Pasien</span>
-                    <i class="bi-chevron-down"></i>
-                </a>
-                <div class="collapse {{ request()->is('pasien*') ? 'show' : '' }}" id="pasienMenu">
-                    <ul class="nav flex-column ms-3">
-                        <li><a href="{{ url('/pasien/pencarian') }}" class="nav-link nav-link-sm {{ request()->is('pasien/pencarian*') ? 'active' : '' }}">Pencarian Kartu</a></li>
-                        <li><a href="{{ url('/pasien/cetak') }}" class="nav-link nav-link-sm {{ request()->is('pasien/cetak*') ? 'active' : '' }}">Cetak Kartu</a></li>
-                        <li><a href="{{ url('/pasien/data') }}" class="nav-link nav-link-sm {{ request()->is('pasien/data*') ? 'active' : '' }}">Telusuri Pasien</a></li>
-                        <li><a href="{{ url('/pasien/kontrol') }}" class="nav-link nav-link-sm {{ request()->is('pasien/kontrol*') ? 'active' : '' }}">Data Pasien Kontrol</a></li>
-                        <li><a href="{{ url('/pasien/master') }}" class="nav-link nav-link-sm {{ request()->is('pasien/master*') ? 'active' : '' }}">Master Pasien</a></li>
-                        <li><a href="{{ url('/pasien/verifikasi') }}" class="nav-link nav-link-sm {{ request()->is('pasien/verifikasi*') ? 'active' : '' }}">Verifikasi Pasien</a></li>
-                    </ul>
-                </div>
-            </li>
-
-            <li class="nav-item">
-                @php
-                    $isBpjs = request()->is('bpjs*') || request()->is('poli-bpjs*') || request()->is('riwayat-peserta-bpjs*') || request()->is('cetak-rujukan-bpjs*');
-                @endphp
-                <a href="#bpjsMenu" class="nav-link d-flex justify-content-between align-items-center {{ $isBpjs ? 'active' : '' }}" data-bs-toggle="collapse" role="button" aria-expanded="{{ $isBpjs ? 'true' : 'false' }}">
-                    <span><i class="bi-card-checklist me-2"></i> BPJS</span>
-                    <i class="bi-chevron-down"></i>
-                </a>
-                <div class="collapse {{ $isBpjs ? 'show' : '' }}" id="bpjsMenu">
-                    <ul class="nav flex-column ms-3">
-                        <li><a href="{{ url('/poli-bpjs') }}" class="nav-link nav-link-sm {{ request()->is('poli-bpjs*') ? 'active' : '' }}">BPJS</a></li>
-                        <li><a href="{{ url('/riwayat-peserta-bpjs') }}" class="nav-link nav-link-sm {{ request()->is('riwayat-peserta-bpjs*') ? 'active' : '' }}">Riwayat Peserta BPJS</a></li>
-                        <li><a href="{{ url('/cetak-rujukan-bpjs') }}" class="nav-link nav-link-sm {{ request()->is('cetak-rujukan-bpjs*') ? 'active' : '' }}">Cetak Rujukan BPJS</a></li>
-                    </ul>
-                </div>
-            </li>
-            @endif
-
-            {{-- Poliklinik & Pemeriksaan (Admin & Dokter) --}}
-            @if(in_array($role, ['admin', 'dokter']))
+        <!-- Navigation -->
+        <div class="flex-grow-1 p-3">
             @php
-                $isPemeriksaan = request()->routeIs('pemeriksaan.*') || request()->is('pemeriksaan*');
-                // Fix: Ubah 'poli*' menjadi 'poli/*' agar tidak bentrok dengan 'poli-bpjs'
-                $isPoli = request()->is('poli/*');
+                $user = Auth::user();
+                $role = $user ? $user->role : 'guest';
             @endphp
-            <li class="nav-item">
-                <a href="#poliMenu" class="nav-link d-flex justify-content-between align-items-center {{ $isPoli ? 'active' : '' }}" data-bs-toggle="collapse" role="button" aria-expanded="{{ $isPoli ? 'true' : 'false' }}">
-                    <span><i class="bi-hospital me-2"></i> Poliklinik</span>
-                    <i class="bi-chevron-down"></i>
-                </a>
-                <div class="collapse {{ $isPoli ? 'show' : '' }}" id="poliMenu">
-                    <ul class="nav flex-column ms-3">
-                        @foreach(config('poli.options') as $poliOption)
-                        <li>
-                            <a href="{{ route('poli.show', ['nama_poli' => $poliOption]) }}" class="nav-link nav-link-sm {{ request()->is('poli/' . $poliOption) ? 'active' : '' }}">
-                                {{ $poliOption }}
-                            </a>
-                        </li>
-                        @endforeach
-                    </ul>
-                </div>
-            </li>
 
-            <li class="nav-item">
-                <a href="{{ route('kunjungan.hari-ini') }}" class="nav-link {{ request()->routeIs('kunjungan.hari-ini') ? 'active' : '' }}">
-                    <i class="bi-speedometer2 me-2"></i> Kunjungan Poliklinik
-                </a>
-            </li>
+            <ul class="nav flex-column gap-1">
+                <li class="nav-item">
+                    <a href="{{ url('/dashboard') }}" class="nav-link {{ request()->is('dashboard') ? 'active' : '' }}">
+                        <i class="fas fa-home me-3"></i> Dashboard
+                    </a>
+                </li>
 
-            <li class="nav-item">
-                <a href="{{ route('pemeriksaan.index') }}" class="nav-link {{ $isPemeriksaan ? 'active' : '' }}">
-                    <i class="bi-file-medical me-2"></i> Pemeriksaan
-                </a>
-            </li>
-            <li class="nav-item"><a href="{{ url('/laboratorium') }}" class="nav-link {{ request()->is('laboratorium*') ? 'active' : '' }}"><i class="bi-microscope me-2"></i> Laboratorium</a></li>
-            <li class="nav-item"><a href="{{ url('/poned') }}" class="nav-link {{ request()->is('poned*') ? 'active' : '' }}"><i class="bi-activity me-2"></i> PONED</a></li>
-            @endif
+                {{-- Admin & Pendaftaran Section --}}
+                @if(in_array($role, ['admin', 'pendaftaran']))
+                <div class="mt-4 mb-2 ps-3 text-uppercase text-muted fw-bold" style="font-size: 0.7rem; letter-spacing: 0.05em;">Layanan Pasien</div>
 
-            {{-- Unit Layanan (IGD & Rawat Inap) - Accessible to Admin, Dokter, Pendaftaran --}}
-            @if(in_array($role, ['admin', 'dokter', 'pendaftaran']))
-            <li class="nav-item"><a href="{{ url('/rawat-inap') }}" class="nav-link {{ request()->is('rawat-inap*') ? 'active' : '' }}"><i class="bi-house-fill me-2"></i> Rawat Inap</a></li>
-            <li class="nav-item"><a href="{{ route('igd.index') }}" class="nav-link {{ request()->routeIs('igd.*') ? 'active' : '' }}"><i class="bi-cone-striped me-2"></i> IGD & Triase</a></li>
-            @endif
+                <li class="nav-item">
+                    <a href="{{ route('pendaftaran.create-baru') }}" class="nav-link {{ request()->routeIs('pendaftaran.create-baru') ? 'active' : '' }}">
+                        <i class="fas fa-user-plus me-3"></i> Pendaftaran Baru
+                    </a>
+                </li>
 
-            {{-- Gudang Obat (Admin & Apotek) --}}
-            @if(in_array($role, ['admin', 'apotek']))
-            <li class="nav-item">
-                @php
-                    $isGudang = request()->is('gudang*') || request()->is('apotek*') || request()->is('apotek-retail*') || request()->is('master-obat*') || request()->is('farmasi*');
-                @endphp
-                <a href="#gudangMenu" class="nav-link d-flex justify-content-between align-items-center {{ $isGudang ? 'active' : '' }}" data-bs-toggle="collapse" role="button" aria-expanded="{{ $isGudang ? 'true' : 'false' }}">
-                    <span><i class="bi-box-seam me-2"></i> Gudang Obat</span>
-                    <i class="bi-chevron-down"></i>
-                </a>
-                <div class="collapse {{ $isGudang ? 'show' : '' }}" id="gudangMenu">
-                    <ul class="nav flex-column ms-3">
-                        <li><a href="{{ url('/apotek') }}" class="nav-link nav-link-sm {{ request()->is('apotek*') ? 'active' : '' }}">Apotek</a></li>
-                        <li><a href="{{ url('/apotek-retail') }}" class="nav-link nav-link-sm {{ request()->is('apotek-retail*') ? 'active' : '' }}">Apotek Retail</a></li>
-                        <li><a href="{{ url('/master-obat') }}" class="nav-link nav-link-sm {{ request()->is('master-obat*') ? 'active' : '' }}">Master Obat</a></li>
-                        <li><a href="{{ url('/farmasi') }}" class="nav-link nav-link-sm {{ request()->is('farmasi*') ? 'active' : '' }}">Farmasi</a></li>
-                    </ul>
-                </div>
-            </li>
-            @endif
+                <li class="nav-item">
+                    <a href="{{ route('pendaftaran.list') }}" class="nav-link {{ request()->routeIs('pendaftaran.list') ? 'active' : '' }}">
+                        <i class="fas fa-list-alt me-3"></i> Antrean & Kunjungan
+                    </a>
+                </li>
 
-            {{-- Kasir (Admin & Kasir) --}}
-            @if(in_array($role, ['admin', 'kasir']))
-            <li class="nav-item">
-                <a href="{{ url('/kasir') }}" class="nav-link {{ request()->is('kasir*') ? 'active' : '' }}">
-                    <i class="bi-cash-coin me-2"></i> Kasir
-                </a>
-            </li>
-            <li class="nav-item"><a href="{{ url('/billing') }}" class="nav-link {{ request()->is('billing*') ? 'active' : '' }}"><i class="bi-receipt me-2"></i> Billing</a></li>
-            @endif
+                <li class="nav-item">
+                    <a href="{{ url('/pasien/data') }}" class="nav-link {{ request()->is('pasien/data*') ? 'active' : '' }}">
+                        <i class="fas fa-users me-3"></i> Database Pasien
+                    </a>
+                </li>
+                @endif
 
-            {{-- Master Data & Lainnya (Admin Only) --}}
-            @if($role === 'admin')
-            @php $isMaster = request()->is('master-data*'); @endphp
-            <li class="nav-item">
-                <a href="#masterDataMenu" class="nav-link d-flex justify-content-between align-items-center {{ $isMaster ? 'active' : '' }}" data-bs-toggle="collapse" role="button" aria-expanded="{{ $isMaster ? 'true' : 'false' }}">
-                    <span><i class="bi-database-fill me-2"></i> Master Data</span>
-                    <i class="bi-chevron-down"></i>
-                </a>
-                <div class="collapse {{ $isMaster ? 'show' : '' }}" id="masterDataMenu">
-                    <ul class="nav flex-column ms-3">
-                        <li><a href="{{ route('master-data.keadaan-akhir') }}" class="nav-link nav-link-sm {{ request()->is('master-data/keadaan-akhir*') ? 'active' : '' }}">Keadaan Akhir</a></li>
-                        <li><a href="{{ route('master-data.menu') }}" class="nav-link nav-link-sm {{ request()->is('master-data/menu*') ? 'active' : '' }}">Menu</a></li>
-                        <li><a href="{{ route('master-data.mitra') }}" class="nav-link nav-link-sm {{ request()->is('master-data/mitra*') ? 'active' : '' }}">Mitra</a></li>
-                        <li><a href="{{ route('master-data.hak-akses') }}" class="nav-link nav-link-sm {{ request()->is('master-data/hak-akses*') ? 'active' : '' }}">Hak Akses</a></li>
-                        <li><a href="{{ route('master-data.aktivasi-poli') }}" class="nav-link nav-link-sm {{ request()->is('master-data/aktivasi-poli*') ? 'active' : '' }}">Aktivasi Poli</a></li>
-                        <li><a href="{{ route('master-data.pegawai') }}" class="nav-link nav-link-sm {{ request()->is('master-data/pegawai*') ? 'active' : '' }}">Pegawai</a></li>
-                        <li><a href="{{ route('master-data.jadwal-poli') }}" class="nav-link nav-link-sm {{ request()->is('master-data/jadwal-poli*') ? 'active' : '' }}">Jadwal Poli</a></li>
-                        <li><a href="{{ route('master-data.tindakan-laborat') }}" class="nav-link nav-link-sm {{ request()->is('master-data/tindakan-laborat*') ? 'active' : '' }}">Tindakan &amp; Laborat</a></li>
-                        <li><a href="{{ route('master-data.icd10.index') }}" class="nav-link nav-link-sm {{ request()->is('master-data/icd10*') ? 'active' : '' }}">Diagnosa ICD-10</a></li>
-                        <li><a href="{{ route('master-data.diagnosa') }}" class="nav-link nav-link-sm {{ request()->is('master-data/diagnosa*') ? 'active' : '' }}">Diagnosa (Lama)</a></li>
-                        <li><a href="{{ route('master-data.kamar-rawat-inap') }}" class="nav-link nav-link-sm {{ request()->is('master-data/kamar-rawat-inap*') ? 'active' : '' }}">Kamar Rawat Inap</a></li>
-                        <li><a href="{{ route('master-data.unit') }}" class="nav-link nav-link-sm {{ request()->is('master-data/unit*') ? 'active' : '' }}">Unit</a></li>
-                        <li><a href="{{ route('master-data.vendor') }}" class="nav-link nav-link-sm {{ request()->is('master-data/vendor*') ? 'active' : '' }}">Vendor</a></li>
-                        <li><a href="{{ route('master-data.kategori-diagnosa') }}" class="nav-link nav-link-sm {{ request()->is('master-data/kategori-diagnosa*') ? 'active' : '' }}">Kategori Diagnosa</a></li>
-                        <li><a href="{{ route('master-data.jenis-pembayaran') }}" class="nav-link nav-link-sm {{ request()->is('master-data/jenis-pembayaran*') ? 'active' : '' }}">Jenis Pembayaran</a></li>
-                        <li><a href="{{ route('master-data.profesi') }}" class="nav-link nav-link-sm {{ request()->is('master-data/profesi*') ? 'active' : '' }}">Profesi</a></li>
-                        <li><a href="{{ route('master-data.resep-info') }}" class="nav-link nav-link-sm {{ request()->is('master-data/resep-info*') ? 'active' : '' }}">Resep Info</a></li>
-                        <li><a href="{{ route('master-data.rs-rujukan') }}" class="nav-link nav-link-sm {{ request()->is('master-data/rs-rujukan*') ? 'active' : '' }}">RS Rujukan</a></li>
-                    </ul>
-                </div>
-            </li>
+                {{-- Medis Section --}}
+                @if(in_array($role, ['admin', 'dokter', 'perawat']))
+                <div class="mt-4 mb-2 ps-3 text-uppercase text-muted fw-bold" style="font-size: 0.7rem; letter-spacing: 0.05em;">Medis & Klinis</div>
 
-            <li class="nav-item">
-                <a href="#laporanMenu" class="nav-link d-flex justify-content-between align-items-center {{ request()->is('laporan*') ? 'active' : '' }}" data-bs-toggle="collapse" role="button" aria-expanded="{{ request()->is('laporan*') ? 'true' : 'false' }}">
-                    <span><i class="bi-file-earmark-text me-2"></i> Laporan</span>
-                    <i class="bi-chevron-down"></i>
-                </a>
-                <div class="collapse {{ request()->is('laporan*') ? 'show' : '' }}" id="laporanMenu">
-                    <ul class="nav flex-column ms-3">
-                        <li><a href="{{ route('laporan.index') }}" class="nav-link nav-link-sm {{ request()->routeIs('laporan.index') ? 'active' : '' }}">Pusat Laporan</a></li>
-                        <li><a href="{{ route('laporan.kunjungan') }}" class="nav-link nav-link-sm {{ request()->routeIs('laporan.kunjungan') ? 'active' : '' }}">Laporan Kunjungan</a></li>
-                        <li><a href="{{ route('laporan.diagnosa') }}" class="nav-link nav-link-sm {{ request()->routeIs('laporan.diagnosa') ? 'active' : '' }}">Laporan Morbiditas</a></li>
-                    </ul>
-                </div>
-            </li>
+                <li class="nav-item">
+                    <a href="{{ route('pemeriksaan.index') }}" class="nav-link {{ request()->routeIs('pemeriksaan.*') ? 'active' : '' }}">
+                        <i class="fas fa-stethoscope me-3"></i> Pemeriksaan
+                    </a>
+                </li>
 
-            <li class="nav-item"><a href="{{ url('/ubah-password') }}" class="nav-link {{ request()->is('ubah-password*') ? 'active' : '' }}"><i class="bi-key-fill me-2"></i> Ubah Password</a></li>
-            <li class="nav-item"><a href="{{ url('/pengaturan') }}" class="nav-link {{ request()->is('pengaturan*') ? 'active' : '' }}"><i class="bi-gear-fill me-2"></i> Pengaturan</a></li>
-            <li class="nav-item"><a href="{{ url('/pengaturan-grup') }}" class="nav-link {{ request()->is('pengaturan-grup*') ? 'active' : '' }}"><i class="bi-people-fill me-2"></i> Pengaturan Grup</a></li>
-            <li class="nav-item"><a href="{{ url('/bypass') }}" class="nav-link {{ request()->is('bypass*') ? 'active' : '' }}"><i class="bi-toggle-on me-2"></i> Bypass</a></li>
-            <li class="nav-item"><a href="{{ url('/whatsapp') }}" class="nav-link {{ request()->is('whatsapp*') ? 'active' : '' }}"><i class="bi-whatsapp me-2"></i> Whatsapp</a></li>
-            @endif
+                <li class="nav-item">
+                    <a href="{{ url('/rawat-inap') }}" class="nav-link {{ request()->is('rawat-inap*') ? 'active' : '' }}">
+                        <i class="fas fa-bed me-3"></i> Rawat Inap
+                    </a>
+                </li>
 
-            {{-- Rekam Medis (Role: rekam_medis) --}}
-            @if($role === 'rekam_medis')
-            <li class="nav-item">
-                <a href="{{ route('rekam-medis.index') }}" class="nav-link {{ request()->routeIs('rekam-medis.index') ? 'active' : '' }}">
-                    <i class="bi-grid-fill me-2"></i> Dashboard RM
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('rekam-medis.pasien') }}" class="nav-link {{ request()->routeIs('rekam-medis.pasien') || request()->routeIs('rekam-medis.riwayat') ? 'active' : '' }}">
-                    <i class="bi-folder2-open me-2"></i> Data Pasien (EMR)
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="#laporanMenu" class="nav-link d-flex justify-content-between align-items-center {{ request()->is('laporan*') ? 'active' : '' }}" data-bs-toggle="collapse" role="button" aria-expanded="{{ request()->is('laporan*') ? 'true' : 'false' }}">
-                    <span><i class="bi-file-earmark-text me-2"></i> Laporan</span>
-                    <i class="bi-chevron-down"></i>
-                </a>
-                <div class="collapse {{ request()->is('laporan*') ? 'show' : '' }}" id="laporanMenu">
-                    <ul class="nav flex-column ms-3">
-                        <li><a href="{{ route('laporan.index') }}" class="nav-link nav-link-sm {{ request()->routeIs('laporan.index') ? 'active' : '' }}">Pusat Laporan</a></li>
-                        <li><a href="{{ route('laporan.kunjungan') }}" class="nav-link nav-link-sm {{ request()->routeIs('laporan.kunjungan') ? 'active' : '' }}">Laporan Kunjungan</a></li>
-                        <li><a href="{{ route('laporan.diagnosa') }}" class="nav-link nav-link-sm {{ request()->routeIs('laporan.diagnosa') ? 'active' : '' }}">Laporan Morbiditas</a></li>
-                    </ul>
-                </div>
-            </li>
-            @endif
-        </ul>
-        <hr>
+                <li class="nav-item">
+                    <a href="{{ route('igd.index') }}" class="nav-link {{ request()->routeIs('igd.*') ? 'active' : '' }}">
+                        <i class="fas fa-ambulance me-3"></i> IGD
+                    </a>
+                </li>
+                @endif
 
-        {{-- PROFILE SIDEBAR (FIXED) --}}
-        <div class="dropdown mt-auto">
-            <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                {{-- Admin Section --}}
+                @if($role === 'admin')
+                <div class="mt-4 mb-2 ps-3 text-uppercase text-muted fw-bold" style="font-size: 0.7rem; letter-spacing: 0.05em;">Administrasi</div>
+
+                <li class="nav-item">
+                    <a href="{{ route('master-data.pegawai') }}" class="nav-link {{ request()->is('master-data/pegawai*') ? 'active' : '' }}">
+                        <i class="fas fa-user-tie me-3"></i> Data Pegawai
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('laporan.index') }}" class="nav-link {{ request()->is('laporan*') ? 'active' : '' }}">
+                        <i class="fas fa-chart-bar me-3"></i> Laporan
+                    </a>
+                </li>
+                @endif
+            </ul>
+        </div>
+
+        <!-- Footer User Profile -->
+        <div class="p-3 border-top bg-light">
+            <div class="d-flex align-items-center">
                 <img src="{{ 
                     (Auth::check() && Auth::user()->profile_photo_url) ? Auth::user()->profile_photo_url : 
-                    (Auth::check() && isset(Auth::user()->avatar) ? asset('storage/' . Auth::user()->avatar) : (session('user_photo') ?? 'https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg'))
-                }}" alt="" class="avatar-profile me-2">
-                <strong class="text-truncate" style="max-width: 130px;">{{ Auth::check() ? Auth::user()->name : (session('user') ?? 'Petugas') }}</strong>
-            </a>
-            <ul class="dropdown-menu text-small shadow">
-                <li><a class="dropdown-item" href="{{ url('/profile') }}"><i class="bi-person-fill"></i> Profil Saya</a></li>
-                <li><a class="dropdown-item" href="{{ url('/pengaturan') }}"><i class="bi-gear-fill"></i> Pengaturan</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item text-danger" href="{{ url('/logout') }}"><i class="bi-box-arrow-right"></i> Logout</a></li>
-            </ul>
+                    (Auth::check() && isset(Auth::user()->avatar) ? asset('storage/' . Auth::user()->avatar) : (session('user_photo') ?? 'https://ui-avatars.com/api/?name=User&background=2563EB&color=fff'))
+                }}" class="rounded-circle shadow-sm" width="40" height="40">
+                <div class="ms-3 overflow-hidden">
+                    <h6 class="mb-0 text-dark fw-bold text-truncate">{{ Auth::check() ? Auth::user()->name : (session('user') ?? 'Petugas') }}</h6>
+                    <small class="text-muted d-block text-truncate">{{ ucfirst($role) }}</small>
+                </div>
+            </div>
+            <div class="mt-3 d-grid gap-2">
+                <a href="{{ url('/logout') }}" class="btn btn-outline-danger btn-sm">
+                    <i class="fas fa-sign-out-alt me-1"></i> Logout
+                </a>
+            </div>
         </div>
     </nav>
 
+    <!-- MAIN CONTENT -->
     <div class="main-content">
-        <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow-sm">
-            <button id="sidebarToggle" class="btn btn-link d-md-none rounded-circle me-3">
-                <i class="bi-list fs-4"></i>
+        <!-- Topbar -->
+        <nav class="navbar navbar-expand navbar-light topbar px-4 py-3 sticky-top">
+            <button id="sidebarToggle" class="btn btn-light rounded-circle shadow-sm me-3 border">
+                <i class="fas fa-bars text-primary"></i>
             </button>
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item dropdown no-arrow">
-                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                        <span class="me-2 d-none d-lg-inline text-gray-600 small fw-bold">{{ Auth::check() ? Auth::user()->name : (session('user') ?? 'Petugas') }}</span>
-                        {{-- PROFILE TOPBAR (FIXED) --}}
-                        <img class="avatar-profile" src="{{ 
-                            (Auth::check() && Auth::user()->profile_photo_url) ? Auth::user()->profile_photo_url : 
-                            (Auth::check() && isset(Auth::user()->avatar) ? asset('storage/' . Auth::user()->avatar) : 'https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg')
-                        }}">
+
+            <h5 class="mb-0 fw-bold text-dark d-none d-md-block">
+                @yield('title', 'Sistem Informasi Klinik')
+            </h5>
+
+            <ul class="navbar-nav ms-auto align-items-center">
+                <li class="nav-item me-3">
+                    <a href="#" class="nav-link position-relative text-secondary">
+                        <i class="fas fa-bell fs-5"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle">
+                            <span class="visually-hidden">New alerts</span>
+                        </span>
                     </a>
-                    <div class="dropdown-menu dropdown-menu-end shadow">
-                        <a class="dropdown-item" href="{{ url('/profile') }}">
-                            <i class="bi-person-fill me-2"></i> Profil Saya
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item text-danger" href="{{ url('/logout') }}">
-                            <i class="bi-box-arrow-right me-2"></i> Logout
-                        </a>
+                </li>
+                <li class="nav-item">
+                    <div class="text-end d-none d-md-block">
+                        <small class="text-muted d-block" style="font-size: 0.7rem;">{{ now()->translatedFormat('l, d F Y') }}</small>
+                        <span class="fw-bold text-primary" id="clock">{{ now()->format('H:i') }}</span>
                     </div>
                 </li>
             </ul>
         </nav>
 
-        <main class="container-fluid px-4">
+        <!-- Content Body -->
+        <main class="p-4">
             @yield('content')
         </main>
     </div>
 
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        const sidebarToggle = document.getElementById('sidebarToggle');
-        if (sidebarToggle) {
-            sidebarToggle.addEventListener('click', event => {
-                event.preventDefault();
-                document.body.classList.toggle('sidebar-toggled');
+        // Sidebar Toggle Logic
+        document.getElementById('sidebarToggle').addEventListener('click', function() {
+            document.body.classList.toggle('sidebar-toggled');
+        });
+
+        // Close sidebar on mobile when link clicked
+        if (window.innerWidth < 768) {
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', () => {
+                    document.body.classList.remove('sidebar-toggled');
+                });
             });
         }
-        document.querySelectorAll('.sidebar-nav .nav-link').forEach(link => {
-            link.addEventListener('click', function() {
-                if (window.innerWidth < 768) {
-                    document.body.classList.remove('sidebar-toggled');
-                }
-            });
-        });
+
+        // Realtime Clock
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const clock = document.getElementById('clock');
+            if(clock) clock.textContent = `${hours}:${minutes}`;
+        }
+        setInterval(updateClock, 1000);
     </script>
     @stack('scripts')
 </body>
